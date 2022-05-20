@@ -1,0 +1,87 @@
+AS65 Assembler for R6502 [1.42].                                     Page    1
+----------------------------- Project_197DP.asm ------------------------------
+
+78 lines read, no errors in pass 1.
+                        
+1700 =                  PortA		equ	$1700		; Address of Port A Data Register
+1701 =                  PortADDR	equ	$1701		; Address of Port A Data Direction
+                        
+1702 =                  PortB		equ	$1702
+1703 =                  PortBDDR	equ	$1703
+                        
+0000 =                  		org	$0000
+                        
+                        
+                        ; initializing a variable as 0
+0000 =                  output		equ	$0000
+0000 : a000             		ldy	#$00
+0002 : 8400             		sty	output
+                        
+                        
+                        
+                        ;taking input in from the sensor (connected to Data_0 
+                        ;then output it to another let's say (Data_1 = PA1)
+                        ;SO I want to take portA as output and portB as input
+                        
+                        
+                        
+0004 :                  Alarm:	
+                        		; initialize:
+0200 =                  		org	$0200
+                        		code
+0200 : d8               		cld			; clears decimal mode
+                        
+0201 : a200             		ldx	#$00		
+0203 : a0ff             		ldy 	#$ff
+0205 : 8e0117           		stx	PortADDR	; set portA to input	
+0208 : 8c0317           		sty	PortBDDR	; set portB as output
+                        
+                        
+020b : a000             		ldy	#$00		; X = 0
+                        
+                        
+                        
+020d :                  Loop1:		
+020d : ad0017           		lda	PortA		; load the input from portA here
+0210 : 2901             		and	#$01
+0212 : 8d0217           		sta	PortB
+0215 : 4c0d02           		jmp	Loop1
+                        
+                        		; so we are comparing the value
+                        
+0218 : c932             		cmp	#50		; FIX THIS so that the value is compared to
+                        					; the comparator is set to
+021a : 3007             		bmi	AboveLine	; branch if minus, continue if it's no
+                        		
+                        		; if the loop does not go into "AboveLine", then inp
+021c : a000             		ldy	#$00
+021e : 8400             		sty	output		; store the value 0 as an output
+                        
+0220 : 4c0d02           		jmp	Loop1		; go back to the loop
+                        
+                        
+                        
+0223 :                  AboveLine:
+                        		; here we basically want to return 1 and put it as a
+AS65 Assembler for R6502 [1.42].                                     Page    2
+----------------------------- Project_197DP.asm ------------------------------
+
+                        
+0223 : a001             		ldy	#$01
+0225 : 8400             		sty	output
+                        
+                        
+                        
+                        
+                        
+                        
+                        ;we want to load the input (load) from the sensor then
+                        ;use that data to generate an output (store)
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+No errors in pass 2.

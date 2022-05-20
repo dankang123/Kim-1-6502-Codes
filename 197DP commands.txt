@@ -1,0 +1,32 @@
+197DP commands:
+
+(AD address)
+(DA data)
+(GO run)
+(INC increment)
+(JMP jump to)
+
+runsonly one instruction each time (SST switch is ON)
+
+
+
+how to rotate bits to right:
+{$0200 data $18 - clear carry 
+$66 - Rotate Right
+$20 - (what's stored in address 20)
+
+
+At address 
+{$0200 data $E6} (INC by 1)
+{$0201 data $20} (store in 0020)  
+{$0202 data $4C (JMP to $0200)
+ $0203 data $00 
+ $0204 data $02}
+
+
+
+Storing bits into different addresses: (need to use accumulator NOT X or Y here)
+{$0200 data $A5 (load 20)
+ $0201 data $20} 
+{$0202 data $85
+ $0203 data $21}
