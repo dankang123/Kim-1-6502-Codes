@@ -1,0 +1,61 @@
+PortA		equ	$1700
+PortADDR 	equ 	$1701
+TimerDiv1IRQ	equ	$171C
+IRQVectorL	equ	$17FE
+IRQVectorH	equ	$17FF
+RealTime	equ	$00		; RealTime in increments of 100us
+NextTime	equ	$01
+
+
+; TimerRegister	equ	$1704
+
+; add code if using a PC
+	    	org	$0200
+		cld			; clear decimal mode
+		lda	#$00		; set IRQ vector
+		sta	IRQVectorL	;
+		lda	#$03		;
+		sta	IRQVectorH	;
+		lda	#$00
+		sta	RealTime
+		lda	#10
+		sta	NextTime
+		
+
+		lda	#$FF 		; making port A an output all 8 bits
+		sta 	PortADDR
+
+		cli			; enable interrupts
+		lda	#100		; count down from 100 decimal
+		sta	TimerDiv1IRQ	
+		
+
+dummy:		lda	RealTime
+		cmp	NextTime
+		bmi	dummy
+
+		clc			; establish next target
+		lda	NextTime
+		adc	#10
+		sta	NextTime	 
+
+		inc	PortA		; increment port A every ms
+		jmp	dummy
+
+
+;===========================================================
+;Interrupt Service Routine
+;===========================================================
+		
+		org	$0300 	
+		pha	
+
+		inc	RealTime
+		
+		lda	#100-30		; count down from 100 decimal 
+					; (reduced time by 30 to account for time to get here)
+		sta	TimerDiv1IRQ	
+		pla
+		rti
+
+		end
